@@ -47,17 +47,6 @@ const configureEndpoints = () => {
     }
 }
 
-// const getGaugeData = async (id) => {
-//     Papa.parsePromise(config[id].live, {
-//         download: true,
-//         complete: function(results) {
-//             // formats the data into a usable format
-//             data = results.data.splice(1, results.data.length - 1).map(r => [new Date(r[0]), parseFloat(r[2])]);
-//             gaugedata[id].live = data;
-//         }
-//     });
-// }
-
 const getGaugeData = (id) => new Promise((resolve, reject) => {
     
     Papa.parse(config[id].live, {
