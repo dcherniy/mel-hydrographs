@@ -10,5 +10,33 @@
     "YRWB": {
         "live": "https://api.melbournewater.com.au/rainfall-river-level/229404A/river-flow/live.csv",
         "hourly": "https://api.melbournewater.com.au/rainfall-river-level/229404A/river-flow/hourly/range.csv"
+    },
+    "MR": {
+        "live": "https://api.melbournewater.com.au/rainfall-river-level/230105A/river-flow/live.csv",
+        "hourly": "https://api.melbournewater.com.au/rainfall-river-level/230105A/river-flow/hourly/range.csv"
+    },
+    "MC": {
+        "live": "https://api.melbournewater.com.au/rainfall-river-level/229149A/river-flow/live.csv",
+        "hourly": "https://api.melbournewater.com.au/rainfall-river-level/229149A/river-flow/hourly/range.csv"
+    },
+    "DC": {
+        "live": "https://api.melbournewater.com.au/rainfall-river-level/228356B/river-flow/live.csv",
+        "hourly": "https://api.melbournewater.com.au/rainfall-river-level/228356B/river-flow/hourly/range.csv"
+    },
+    "CAC": {
+        "live": "https://api.melbournewater.com.au/rainfall-river-level/228228A/river-flow/live.csv",
+        "hourly": "https://api.melbournewater.com.au/rainfall-river-level/228228A/river-flow/hourly/range.csv"
+    },
+    "BYR": {
+        "live": "https://api.melbournewater.com.au/rainfall-river-level/228213A/river-flow/live.csv",
+        "hourly": "https://api.melbournewater.com.au/rainfall-river-level/228213A/river-flow/hourly/range.csv"
+    },
+    "LLR": {
+        "live": "https://api.melbournewater.com.au/rainfall-river-level/228209B/river-flow/live.csv",
+        "hourly": "https://api.melbournewater.com.au/rainfall-river-level/228209B/river-flow/hourly/range.csv"
+    },
+    "BSR": {
+        "live": "https://api.melbournewater.com.au/rainfall-river-level/227231A/river-flow/live.csv",
+        "hourly": "https://api.melbournewater.com.au/rainfall-river-level/227231A/river-flow/hourly/range.csv"
     }
 }
