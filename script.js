@@ -11,11 +11,6 @@ let charts = {};
     await createCharts()
 })();
 
-Papa.parsePromise = function(file) {
-    return new Promise(function(complete, error) {
-      Papa.parse(file, {complete, error});
-    });
-  };
 
 // helper function to create charts
 let createCharts = async function() {
@@ -24,6 +19,7 @@ let createCharts = async function() {
         createElement(gaugeId);
         createCtx(gaugeId);
     }
+    console.log(gaugedata)
 }
 
 // helper function to configure the endpoints
@@ -52,7 +48,12 @@ const getGaugeData = (id) => new Promise((resolve, reject) => {
     Papa.parse(config[id].live, {
         download: true,
         complete: (results) =>{
-            data = results.data.slice(1, results.data.length).map(r => [new Date(r[0]), parseFloat(r[2])]);
+            data = results.data.slice(1, results.data.length).map(r => 
+                ({
+                    x: r[0],
+                    y: parseFloat(r[2])
+                })
+                );
             gaugedata[id] = {live: data};
             resolve(data);
         },
@@ -63,40 +64,40 @@ const getGaugeData = (id) => new Promise((resolve, reject) => {
 })
 
 const createElement = (id) => {
+    var containerElement = document.createElement("div");
+    containerElement.className = `chart-container`
     var element = document.createElement("canvas");
     element.id = id;
-    element.height = 10;
-    element.width = 10;
-    document.getElementById('main-container').appendChild(element);  
+    containerElement.appendChild(element);
+    document.getElementById('main-container').appendChild(containerElement);  
 }
 
 const createCtx = (id) => {
-    console.log(gaugedata.YR)
     const ctx = document.getElementById(id);
     charts[id] = new Chart(ctx, {
         type: 'line',
-        responsive: true,
+        responsive: false,
+        maintainAspectRatio: false,
         data: {
-            labels: [],
             datasets: [{
                 label: id,
                 data: gaugedata[id].live,
-                // backgroundColor: [
-                //     'rgba(255, 99, 132, 0.2)',
-                //     'rgba(54, 162, 235, 0.2)',
-                //     'rgba(255, 206, 86, 0.2)',
-                //     'rgba(75, 192, 192, 0.2)',
-                //     'rgba(153, 102, 255, 0.2)',
-                //     'rgba(255, 159, 64, 0.2)'
-                // ],
-                // borderColor: [
-                //     'rgba(255, 99, 132, 1)',
-                //     'rgba(54, 162, 235, 1)',
-                //     'rgba(255, 206, 86, 1)',
-                //     'rgba(75, 192, 192, 1)',
-                //     'rgba(153, 102, 255, 1)',
-                //     'rgba(255, 159, 64, 1)'
-                // ],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)'
+                ],
                 borderWidth: 1
             }]
         },
