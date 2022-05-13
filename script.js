@@ -19,7 +19,6 @@ let createCharts = async function() {
         createElement(gaugeId);
         createCtx(gaugeId);
     }
-    console.log(gaugedata)
 }
 
 // helper function to configure the endpoints
@@ -43,8 +42,8 @@ const configureEndpoints = () => {
     }
 }
 
-const getGaugeData = (id) => new Promise((resolve, reject) => {
-    
+// gets gauge data and formats response for the chart
+const getGaugeData = (id) => new Promise((resolve, reject) => {   
     Papa.parse(config[id].live, {
         download: true,
         complete: (results) =>{
@@ -63,6 +62,7 @@ const getGaugeData = (id) => new Promise((resolve, reject) => {
     });
 })
 
+// create canvas and container element for chart
 const createElement = (id) => {
     var containerElement = document.createElement("div");
     containerElement.className = `chart-container`
@@ -72,6 +72,7 @@ const createElement = (id) => {
     document.getElementById('main-container').appendChild(containerElement);  
 }
 
+// create context for chart
 const createCtx = (id) => {
     const ctx = document.getElementById(id);
     charts[id] = new Chart(ctx, {
@@ -80,7 +81,7 @@ const createCtx = (id) => {
         maintainAspectRatio: false,
         data: {
             datasets: [{
-                label: id,
+                label: id, // label for the chart
                 data: gaugedata[id].live,
                 backgroundColor: [
                     'rgba(255, 99, 132, 0.2)',
