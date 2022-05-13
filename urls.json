@@ -1,5 +1,14 @@
 {
     "YR": {
-        "LIVE": "https://api.melbournewater.com.au/rainfall-river-level/229143B/river-flow/live.csv?fromDate=2022-05-13&toDate=2022-05-13"
+        "live": "https://api.melbournewater.com.au/rainfall-river-level/229143B/river-flow/live.csv",
+        "hourly": "https://api.melbournewater.com.au/rainfall-river-level/229143B/river-flow/hourly/range.csv"
+    },
+    "YRWY": {
+        "live": "https://api.melbournewater.com.au/rainfall-river-level/229200B/river-flow/live.csv",
+        "hourly": "https://api.melbournewater.com.au/rainfall-river-level/229200B/river-flow/hourly/range.csv"
+    },
+    "YRWB": {
+        "live": "https://api.melbournewater.com.au/rainfall-river-level/229404A/river-flow/live.csv",
+        "hourly": "https://api.melbournewater.com.au/rainfall-river-level/229404A/river-flow/hourly/range.csv"
     }
 }
