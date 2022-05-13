@@ -10,10 +10,10 @@
 }
 
 .chart-container {
-    height: 250px;
-    max-width: 500px;
+    height: 320px;
+    max-width: 675px;
     flex: 0 0 auto;
-    width: 30%;
+    width: 45%;
 }
 
 body {  
