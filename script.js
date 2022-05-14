@@ -13,16 +13,22 @@ let charts = {};
 })();
 
 
-
-
 // helper function to create charts
 let createCharts = async function() {
+
+    for (const gaugeId in config) {
+        createContainer(gaugeId)
+    }
+
     for (const gaugeId in config) {
         gaugedata[gaugeId] = {};
         await getGaugeData(gaugeId, 'live')
         await getGaugeData(gaugeId, 'hourly')
         await getGaugeData(gaugeId, 'weekly')
-        createElement(gaugeId);
+        await getGaugeData(gaugeId, 'live_river')
+        await getGaugeData(gaugeId, 'hourly_river')
+        await getGaugeData(gaugeId, 'weekly_river')
+        createChartElement(gaugeId);
         createCtx(gaugeId, 'live');
     }
 }
@@ -32,7 +38,6 @@ let createCharts = async function() {
 // hourly will be used to get the hourly data for the last 24 hours
 // weekly will be used to get the hourly data for the last 7 days
 const configureEndpoints = () => {
-
     let lastWeek = new Date();
     lastWeek.setDate(lastWeek.getDate() - 7);
 
@@ -42,9 +47,13 @@ const configureEndpoints = () => {
 
     for (const key in config) {
         const x = config[key].hourly;
+        const y = config[key].hourly_river
         config[key].live = config[key].live += `?fromDate=${todayString}&toDate=${todayString}`
         config[key].hourly = x + `?fromDate=${todayString}&toDate=${todayString}`
         config[key].weekly = x + `?fromDate=${lastWeekString}&toDate=${todayString}`
+        config[key].live_river = config[key].live += `?fromDate=${todayString}&toDate=${todayString}`
+        config[key].hourly_river = x + `?fromDate=${todayString}&toDate=${todayString}`
+        config[key].weekly_river = x + `?fromDate=${lastWeekString}&toDate=${todayString}`
     }
 }
 
@@ -68,16 +77,32 @@ const getGaugeData = (id, key) => new Promise((resolve, reject) => {
     });
 })
 
-// create canvas and container element for chart
-const createElement = (id) => {
+// create container 
+const createContainer = (id) => {
     const container = document.createElement('div');
     container.className = 'chart-container'
     container.id = 'chart-container' + '-' + id;
+    document.getElementById('main-container').appendChild(container);  
+    createLoader(id);
+}
+
+const createLoader = (id) => {
+    const container = document.getElementById('chart-container' + '-' + id);
+    const loader = document.createElement('div');
+    loader.className = 'loader';
+    container.appendChild(loader);
+}
+
+// create canvas and container element for chart
+const createChartElement = (id) => {
+    const container = document.getElementById('chart-container' + '-' + id);
+
+    container.getElementsByClassName('loader')[0].remove();
+
     const element = document.createElement('canvas');
     element.id = id;
     container.appendChild(element);
     createButtons(id, container);
-    document.getElementById('main-container').appendChild(container);  
 }
 
 const createButtons = (id, container) => {
