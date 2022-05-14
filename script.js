@@ -117,7 +117,6 @@ const createButtons = (id, container) => {
 }
 
 const updateChart = (id, period) => {
-    console.log(`${id}-${period}-btn`)
     removeClasses(id);
     document.getElementById(`${id}-${period}-btn`).className = 'button active';
     charts[id].data.datasets[0].data = gaugedata[id][period];
