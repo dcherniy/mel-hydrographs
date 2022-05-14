@@ -4,47 +4,54 @@ let charts = {};
 
 // downloads the config json file with URLs to the gauges
 (async function() {
+    document.title += ' ' + new Date().toLocaleDateString('en-US');
     let res = await fetch('https://raw.githubusercontent.com/dcherniy/mel-hydrographs/master/urls.json')
-    res = await res.json()
+    res = await res.json();
     config = res;
-    configureEndpoints()
-    await createCharts()
+    configureEndpoints();
+    await createCharts();
 })();
+
+
 
 
 // helper function to create charts
 let createCharts = async function() {
     for (const gaugeId in config) {
-        await getGaugeData(gaugeId)
+        gaugedata[gaugeId] = {};
+        await getGaugeData(gaugeId, 'live')
+        await getGaugeData(gaugeId, 'hourly')
+        await getGaugeData(gaugeId, 'weekly')
+        console.log(gaugedata)
         createElement(gaugeId);
-        createCtx(gaugeId);
+        createCtx(gaugeId, 'live');
     }
 }
 
 // helper function to configure the endpoints
 // live will be used to get the live data (from today to today)
 // hourly will be used to get the hourly data for the last 24 hours
-// hourlydays will be used to get the hourly data for the last 7 days
+// weekly will be used to get the hourly data for the last 7 days
 const configureEndpoints = () => {
 
     let lastWeek = new Date();
     lastWeek.setDate(lastWeek.getDate() - 7);
 
     // These will format to 'yyyy-mm-dd'
-    let lastWeekString = lastWeek.toISOString().split('T')[0];
-    let todayString = new Date().toISOString().split('T')[0];
+    const lastWeekString = lastWeek.toISOString().split('T')[0];
+    const todayString = new Date().toISOString().split('T')[0];
 
     for (const key in config) {
         const x = config[key].hourly;
         config[key].live = config[key].live += `?fromDate=${todayString}&toDate=${todayString}`
         config[key].hourly = x + `?fromDate=${todayString}&toDate=${todayString}`
-        config[key].hourlydays = x + `?fromDate=${lastWeekString}&toDate=${todayString}`
+        config[key].weekly = x + `?fromDate=${lastWeekString}&toDate=${todayString}`
     }
 }
 
 // gets gauge data and formats response for the chart
-const getGaugeData = (id) => new Promise((resolve, reject) => {   
-    Papa.parse(config[id].live, {
+const getGaugeData = (id, key) => new Promise((resolve, reject) => {   
+    Papa.parse(config[id][key], {
         download: true,
         complete: (results) =>{
             data = results.data.slice(1, results.data.length).map(r => 
@@ -53,7 +60,7 @@ const getGaugeData = (id) => new Promise((resolve, reject) => {
                     y: parseFloat(r[2])
                 })
                 );
-            gaugedata[id] = {live: data};
+            gaugedata[id][key] = data;
             resolve(data);
         },
         error: function(error) {
@@ -64,16 +71,54 @@ const getGaugeData = (id) => new Promise((resolve, reject) => {
 
 // create canvas and container element for chart
 const createElement = (id) => {
-    var containerElement = document.createElement("div");
-    containerElement.className = `chart-container`
-    var element = document.createElement("canvas");
+    const container = document.createElement('div');
+    container.className = 'chart-container';
+    const element = document.createElement('canvas');
     element.id = id;
-    containerElement.appendChild(element);
-    document.getElementById('main-container').appendChild(containerElement);  
+    container.appendChild(element);
+    createButtons(id, container);
+    document.getElementById('main-container').appendChild(container);  
+}
+
+const createButtons = (id, container) => {
+    const buttonContainer = document.createElement('div');
+    buttonContainer.className = 'button-container';
+
+    const button = document.createElement('button');
+    button.className = 'button';
+    button.innerHTML = 'Live';
+    button.onclick = () => {
+        updateChart(id, 'live');
+    }
+    buttonContainer.appendChild(button);
+
+
+    const button2 = document.createElement('button');
+    button2.className = 'button';
+    button2.innerHTML = 'Hourly (Today)';
+    button2.onclick = () => {
+        updateChart(id, 'hourly');
+    }
+    buttonContainer.appendChild(button2);
+
+    const button3 = document.createElement('button');
+    button3.className = 'button';
+    button3.innerHTML = 'Hourly (Week)';
+    button3.onclick = () => {
+        updateChart(id, 'weekly');
+    }
+    buttonContainer.appendChild(button3);
+
+    container.appendChild(buttonContainer);
+}
+
+const updateChart = (id, period) => {
+    charts[id].data.datasets[0].data = gaugedata[id][period];
+    charts[id].update();
 }
 
 // create context for chart
-const createCtx = (id) => {
+const createCtx = (id, key) => {
     const ctx = document.getElementById(id);
     charts[id] = new Chart(ctx, {
         type: 'line',
@@ -81,8 +126,8 @@ const createCtx = (id) => {
         maintainAspectRatio: false,
         data: {
             datasets: [{
-                label: id, // label for the chart
-                data: gaugedata[id].live,
+                label: `${id}`, // label for the chart
+                data: gaugedata[id][key],
                 backgroundColor: [
                     'rgba(255, 99, 132, 0.2)',
                     'rgba(54, 162, 235, 0.2)',
@@ -104,6 +149,9 @@ const createCtx = (id) => {
         },
         options: {
             scales: {
+                y: {
+                    title: {text: 'm^3/s', display: true},
+                },
                 x: {
                     type: 'timeseries'
                 }
