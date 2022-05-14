@@ -4,7 +4,6 @@ let charts = {};
 
 // downloads the config json file with URLs to the gauges
 (async function() {
-    document.title += ' ' + new Date().toLocaleDateString('en-US');
     let res = await fetch('https://raw.githubusercontent.com/dcherniy/mel-hydrographs/master/urls.json')
     res = await res.json();
     config = res;
