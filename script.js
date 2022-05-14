@@ -22,7 +22,6 @@ let createCharts = async function() {
         await getGaugeData(gaugeId, 'live')
         await getGaugeData(gaugeId, 'hourly')
         await getGaugeData(gaugeId, 'weekly')
-        console.log(gaugedata)
         createElement(gaugeId);
         createCtx(gaugeId, 'live');
     }
@@ -72,7 +71,8 @@ const getGaugeData = (id, key) => new Promise((resolve, reject) => {
 // create canvas and container element for chart
 const createElement = (id) => {
     const container = document.createElement('div');
-    container.className = 'chart-container';
+    container.className = 'chart-container'
+    container.id = 'chart-container' + '-' + id;
     const element = document.createElement('canvas');
     element.id = id;
     container.appendChild(element);
@@ -83,9 +83,11 @@ const createElement = (id) => {
 const createButtons = (id, container) => {
     const buttonContainer = document.createElement('div');
     buttonContainer.className = 'button-container';
+    buttonContainer.id = 'button-container' + '-' + id;
 
     const button = document.createElement('button');
-    button.className = 'button';
+    button.className = 'button active';
+    button.id = `${id}-live-btn`;
     button.innerHTML = 'Live';
     button.onclick = () => {
         updateChart(id, 'live');
@@ -95,6 +97,7 @@ const createButtons = (id, container) => {
 
     const button2 = document.createElement('button');
     button2.className = 'button';
+    button2.id = `${id}-hourly-btn`;
     button2.innerHTML = 'Hourly (Today)';
     button2.onclick = () => {
         updateChart(id, 'hourly');
@@ -103,6 +106,7 @@ const createButtons = (id, container) => {
 
     const button3 = document.createElement('button');
     button3.className = 'button';
+    button3.id = `${id}-weekly-btn`;
     button3.innerHTML = 'Hourly (Week)';
     button3.onclick = () => {
         updateChart(id, 'weekly');
@@ -113,8 +117,19 @@ const createButtons = (id, container) => {
 }
 
 const updateChart = (id, period) => {
+    console.log(`${id}-${period}-btn`)
+    removeClasses(id);
+    document.getElementById(`${id}-${period}-btn`).className = 'button active';
     charts[id].data.datasets[0].data = gaugedata[id][period];
     charts[id].update();
+}
+
+const removeClasses = (id) => {
+    const container = document.getElementById('button-container' + '-' + id);
+    const buttons = container.getElementsByClassName('button');
+    for (let i = 0; i < buttons.length; i++) {
+        buttons[i].className = 'button';
+    }
 }
 
 // create context for chart
