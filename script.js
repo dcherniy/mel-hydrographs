@@ -234,7 +234,7 @@ const createCtx = (id, key) => {
         options: {
             scales: {
                 y: {
-                    title: {text: 'm^3/s', display: true},
+                    title: {text: 'm³/s', display: true},
                 },
                 x: {
                     type: 'timeseries'
