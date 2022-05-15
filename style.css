@@ -14,6 +14,7 @@
     max-width: 680px;
     flex: 0 0 auto;
     width: 45%;
+    margin-bottom: 20px;
 }
 
 .loader {
@@ -26,7 +27,7 @@
     border-radius: 20px;
     background-size: 200% 100%;
     animation: 1.5s shine linear infinite;
-    height: 200px;
+    height: 350px;
 }
 
 @keyframes shine {
