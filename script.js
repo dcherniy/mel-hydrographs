@@ -169,6 +169,7 @@ const updateChart = (id, period) => {
 
     charts[id].data.datasets[0].data = gaugedata[id][activekey];
     charts[id].update();
+    charts[id].activekey = activekey;
 }
 
 const updateMass = (id, mass) => {
