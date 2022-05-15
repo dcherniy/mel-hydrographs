@@ -28,7 +28,7 @@ let createCharts = async function() {
         await getGaugeData(gaugeId, 'hourly_river')
         await getGaugeData(gaugeId, 'weekly_river')
         createChartElement(gaugeId);
-        createCtx(gaugeId, 'live');
+        createCtx(gaugeId, 'live_river');
     }
 }
 
@@ -66,7 +66,7 @@ const getGaugeData = (id, key) => new Promise((resolve, reject) => {
             data = results.data.slice(1, results.data.length).map(r => 
                 ({
                     x: r[0],
-                    y: (river_flow ? parseFloat(r[1]) : parseFloat(r[1]))
+                    y: (river_flow ? parseFloat(r[1]) : parseFloat(r[2]))
                 })
                 );
             gaugedata[id][key] = data;
@@ -140,7 +140,7 @@ const createButtons = (id, container) => {
     buttonContainer.appendChild(button3);
 
     const button4 = document.createElement('button');
-    button4.className = 'btn mass active';
+    button4.className = 'btn mass';
     button4.id = `${id}-flow-btn`;
     button4.innerHTML = 'Flow';
     button4.onclick = () => {
@@ -149,7 +149,7 @@ const createButtons = (id, container) => {
     buttonContainer.appendChild(button4);
 
     const button5 = document.createElement('button');
-    button5.className = 'btn mass';
+    button5.className = 'btn mass active';
     button5.id = `${id}-river-btn`;
     button5.innerHTML = 'Level';
     button5.onclick = () => {
@@ -211,7 +211,7 @@ const createCtx = (id, key) => {
         maintainAspectRatio: false,
         data: {
             datasets: [{
-                label: `${id}`, // label for the chart
+                label: null, // label for the chart
                 data: gaugedata[id][key],
                 backgroundColor: [
                     'rgba(255, 99, 132, 0.2)',
@@ -233,9 +233,18 @@ const createCtx = (id, key) => {
             }]
         },
         options: {
+            plugins: {
+                legend: {
+                    display: false
+                  },
+                title: {
+                    display: true,
+                    text: `${id}`
+                }
+            },
             scales: {
                 y: {
-                    title: {text: 'm³/s', display: true},
+                    title: {text: 'Level (m)', display: true},
                 },
                 x: {
                     type: 'timeseries'
