@@ -45,7 +45,7 @@ body {
     flex-wrap: wrap;
   }
 
-.button {
+.btn {
     margin: 0px 2px;
     display: inline-block;
     outline: 0;
@@ -65,7 +65,21 @@ body {
     transition-property: color, background-color, border-color;
 }
 
-.button.active {
+.btn.mass {
+    color: black;
+}
+
+.btn.mass.active {
+    color: #ffffff;
+    background-color: #2eb302;
+}
+
+.btn.mass:hover {
+    color: #ffffff;
+    background-color: #2eb302;
+}
+
+.btn.active {
     color: #ffffff;
     background-color: #0366d6;
     border-color: #1b1f2326;
@@ -73,7 +87,7 @@ body {
     transition-duration: 0.1s;
 }
 
-.button:hover {
+.btn:hover {
     color: #ffffff;
     background-color: #0366d6;
     border-color: #1b1f2326;

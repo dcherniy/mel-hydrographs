@@ -50,21 +50,23 @@ const configureEndpoints = () => {
         config[key].live = config[key].live += `?fromDate=${todayString}&toDate=${todayString}`
         config[key].hourly = x + `?fromDate=${todayString}&toDate=${todayString}`
         config[key].weekly = x + `?fromDate=${lastWeekString}&toDate=${todayString}`
-        config[key].live_river = config[key].live += `?fromDate=${todayString}&toDate=${todayString}`
-        config[key].hourly_river = x + `?fromDate=${todayString}&toDate=${todayString}`
-        config[key].weekly_river = x + `?fromDate=${lastWeekString}&toDate=${todayString}`
+        config[key].live_river = config[key].live_river += `?fromDate=${todayString}&toDate=${todayString}`
+        config[key].hourly_river = y + `?fromDate=${todayString}&toDate=${todayString}`
+        config[key].weekly_river = y + `?fromDate=${lastWeekString}&toDate=${todayString}`
+
     }
 }
 
 // gets gauge data and formats response for the chart
-const getGaugeData = (id, key) => new Promise((resolve, reject) => {   
+const getGaugeData = (id, key) => new Promise((resolve, reject) => {  
+    const river_flow = key.includes('_');
     Papa.parse(config[id][key], {
         download: true,
         complete: (results) =>{
             data = results.data.slice(1, results.data.length).map(r => 
                 ({
                     x: r[0],
-                    y: parseFloat(r[2])
+                    y: (river_flow ? parseFloat(r[1]) : parseFloat(r[1]))
                 })
                 );
             gaugedata[id][key] = data;
@@ -110,7 +112,7 @@ const createButtons = (id, container) => {
     buttonContainer.id = 'button-container' + '-' + id;
 
     const button = document.createElement('button');
-    button.className = 'button active';
+    button.className = 'period btn active';
     button.id = `${id}-live-btn`;
     button.innerHTML = 'Live';
     button.onclick = () => {
@@ -120,7 +122,7 @@ const createButtons = (id, container) => {
 
 
     const button2 = document.createElement('button');
-    button2.className = 'button';
+    button2.className = 'period btn';
     button2.id = `${id}-hourly-btn`;
     button2.innerHTML = 'Hourly (Today)';
     button2.onclick = () => {
@@ -129,7 +131,7 @@ const createButtons = (id, container) => {
     buttonContainer.appendChild(button2);
 
     const button3 = document.createElement('button');
-    button3.className = 'button';
+    button3.className = 'period btn';
     button3.id = `${id}-weekly-btn`;
     button3.innerHTML = 'Hourly (Week)';
     button3.onclick = () => {
@@ -137,27 +139,71 @@ const createButtons = (id, container) => {
     }
     buttonContainer.appendChild(button3);
 
+    const button4 = document.createElement('button');
+    button4.className = 'btn mass active';
+    button4.id = `${id}-flow-btn`;
+    button4.innerHTML = 'Flow';
+    button4.onclick = () => {
+        updateMass(id, 'flow');
+    }
+    buttonContainer.appendChild(button4);
+
+    const button5 = document.createElement('button');
+    button5.className = 'btn mass';
+    button5.id = `${id}-river-btn`;
+    button5.innerHTML = 'Level';
+    button5.onclick = () => {
+        updateMass(id, 'river');
+    }
+    buttonContainer.appendChild(button5);
+
     container.appendChild(buttonContainer);
 }
 
 const updateChart = (id, period) => {
-    removeClasses(id);
-    document.getElementById(`${id}-${period}-btn`).className = 'button active';
-    charts[id].data.datasets[0].data = gaugedata[id][period];
+    removePeriodClasses(id);
+    document.getElementById(`${id}-${period}-btn`).className = 'period btn active';
+
+    const river = charts[id].activeriver;
+    const activekey = river ? period + '_river' : period;
+
+    charts[id].data.datasets[0].data = gaugedata[id][activekey];
     charts[id].update();
 }
 
-const removeClasses = (id) => {
+const updateMass = (id, mass) => {
+    removeMassClasses(id);
+    document.getElementById(`${id}-${mass}-btn`).className = 'mass btn active';
+
+    let key = charts[id].activekey;
+    let activekey = key.split('_')[0];
+    if (mass === 'river') activekey += '_river';
+    charts[id].activekey = activekey;
+    charts[id].data.datasets[0].data = gaugedata[id][activekey];
+    charts[id].options.scales.y.title.text = mass === 'flow' ? 'm³/s' : 'Level (m)';
+    charts[id].update();
+}
+
+const removeMassClasses = (id) => {
     const container = document.getElementById('button-container' + '-' + id);
-    const buttons = container.getElementsByClassName('button');
+    const buttons = container.getElementsByClassName('mass');
     for (let i = 0; i < buttons.length; i++) {
-        buttons[i].className = 'button';
+        buttons[i].className = 'mass btn';
+    }
+}
+
+const removePeriodClasses = (id) => {
+    const container = document.getElementById('button-container' + '-' + id);
+    const buttons = container.getElementsByClassName('period');
+    for (let i = 0; i < buttons.length; i++) {
+        buttons[i].className = 'period btn';
     }
 }
 
 // create context for chart
 const createCtx = (id, key) => {
     const ctx = document.getElementById(id);
+    const river = key.includes('_');
     charts[id] = new Chart(ctx, {
         type: 'line',
         responsive: false,
@@ -196,4 +242,7 @@ const createCtx = (id, key) => {
             }
         }
     });
+    charts[id]['activeriver'] = river;
+    charts[id]['activekey'] = key;
+    console.log(charts[id])
 }
