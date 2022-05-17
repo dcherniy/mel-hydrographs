@@ -2,6 +2,9 @@ let config = {};
 let gaugedata = {};
 let charts = {};
 
+const yAxisLabelFlow = 'm³/s';
+const yAxisLabelLevel = 'Level (m)';
+
 // downloads the config json file with URLs to the gauges
 (async function() {
     let res = await fetch('https://raw.githubusercontent.com/dcherniy/mel-hydrographs/master/urls.json')
@@ -181,7 +184,7 @@ const updateMass = (id, mass) => {
     if (mass === 'river') activekey += '_river';
     charts[id].activekey = activekey;
     charts[id].data.datasets[0].data = gaugedata[id][activekey];
-    charts[id].options.scales.y.title.text = mass === 'flow' ? 'm³/s' : 'Level (m)';
+    charts[id].options.scales.y.title.text = mass === 'flow' ? yAxisLabelFlow : yAxisLabelLevel;
     charts[id].update();
 }
 
@@ -236,7 +239,7 @@ const createCtx = (id, key) => {
             },
             scales: {
                 y: {
-                    title: {text: 'Level (m)', display: true},
+                    title: {text: yAxisLabelFlow, display: true},
                 },
                 x: {
                     type: 'timeseries'

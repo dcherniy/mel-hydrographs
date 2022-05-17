@@ -5,21 +5,22 @@
     flex-wrap: wrap;
 }
 
-.main-container > div {
+.main-container>div {
     padding: 0px 10px;
 }
 
 @media only screen and (max-width: 780px) {
     .chart-container {
-      width: 100% !important;
-  }
+        width: 100% !important;
+    }
 }
+
 @media only screen and (max-width: 545px) {
     .chart-container {
-      width: 100% !important;
-      height: 230px !important;
+        width: 100% !important;
+        height: 230px !important;
     }
-  }
+}
 
 .chart-container {
     height: 350px;
@@ -44,19 +45,19 @@
 
 @keyframes shine {
     to {
-      background-position-x: -200%;
+        background-position-x: -200%;
     }
-  }
+}
 
-body {  
+body {
     padding: 16px;
-  }
+}
 
-  .button-container {
+.button-container {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-  }
+}
 
 .btn {
     margin: 0px 2px;
@@ -82,24 +83,13 @@ body {
     color: black;
 }
 
-.btn.mass.active {
-    color: #ffffff;
-    background-color: #2eb302;
-}
-
+.btn.mass.active,
 .btn.mass:hover {
     color: #ffffff;
     background-color: #2eb302;
 }
 
-.btn.active {
-    color: #ffffff;
-    background-color: #0366d6;
-    border-color: #1b1f2326;
-    box-shadow: rgba(27, 31, 35, 0.1) 0px 1px 0px 0px, rgba(255, 255, 255, 0.03) 0px 1px 0px 0px inset;
-    transition-duration: 0.1s;
-}
-
+.btn.active,
 .btn:hover {
     color: #ffffff;
     background-color: #0366d6;
