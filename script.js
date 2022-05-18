@@ -239,7 +239,7 @@ const createCtx = (id, key) => {
             },
             scales: {
                 y: {
-                    title: {text: yAxisLabelFlow, display: true},
+                    title: {text: yAxisLabelLevel, display: true},
                 },
                 x: {
                     type: 'timeseries'
